@@ -32,7 +32,8 @@ public class TestCasesCliente extends
 		fsmCliente = new FSMCliente();
 	}
 	
-	public void testLogarValidoUsuario(){
+	//H013 H014
+	public void testLogarValidoUsuarioProfessor(){
 		String userName = "Eliane";
 		String pass = "12345";
 		
@@ -56,6 +57,32 @@ public class TestCasesCliente extends
 		assertEquals(true, fsmCliente.getState() == StatesCliente.inativo.toString());		
 	}
 	
+	//H011 H012
+	public void testLogarValidoUsuarioAluno(){
+		String userName = "Joao";
+		String pass = "12345";
+		
+		assertEquals(true, fsmCliente.getState() == StatesCliente.inativo.toString());
+		
+			solo.assertCurrentActivity("Tela de Login", ActivityLogin.class);
+			
+			solo.clickOnEditText(0);
+			solo.enterText(0,userName);
+			
+			solo.clickOnEditText(1);
+			solo.enterText(1,pass);
+			
+			solo.clickOnButton(0);
+			
+			solo.waitForActivity(ActivityPrincipal.class);
+		fsmCliente.loginServidor();
+		assertEquals(true, fsmCliente.getState() == StatesCliente.logado.toString());
+			solo.clickOnImageButton(0);
+		fsmCliente.efetuarLogout();
+		assertEquals(true, fsmCliente.getState() == StatesCliente.inativo.toString());		
+	}
+	
+	//H011, H013
 	public void testLogarInvalidoUsuario(){
 		String userName = "Eliane";
 		String pass = "54321";
@@ -77,7 +104,8 @@ public class TestCasesCliente extends
 		assertEquals(true, fsmCliente.getState() == StatesCliente.inativo.toString());			
 	}
 	
-	public void testVisualizarPresencaTurmasAluno(){
+	//H017
+	public void testAlunoConsultaPresencaTurma(){
 		String userName = "Joao";
 		String pass = "12345";
 		
@@ -114,7 +142,8 @@ public class TestCasesCliente extends
 		assertEquals(true, fsmCliente.getState() == StatesCliente.inativo.toString());	
 	}
 	
-	public void testVisualizarPresencaTurmasProfessor(){
+	//H015
+	public void testProfessorConsultaPresencaAlunoTurmas(){
 		String userName = "Eliane";
 		String pass = "12345";
 		
@@ -158,8 +187,8 @@ public class TestCasesCliente extends
 		assertEquals(true, fsmCliente.getState() == StatesCliente.inativo.toString());
 	}
 	
-	
-	public void testEntrarEmAulaProfessor(){
+	//H004, H005, H009, H019, H023 
+	public void testEntrarSairAulaProfessor(){
 		String userName = "Eliane";
 		String pass = "12345";
 		
@@ -204,5 +233,49 @@ public class TestCasesCliente extends
 		assertEquals(true, fsmCliente.getState() == StatesCliente.inativo.toString());
 	}
 	
+	//H006, H008, H022
+	public void testEntrarSairAulaAluno(){
+		String userName = "Joao";
+		String pass = "12345";
+		
+		assertEquals(true, fsmCliente.getState() == StatesCliente.inativo.toString());
+		
+			solo.assertCurrentActivity("Tela de Login", ActivityLogin.class);
+			
+			solo.clickOnEditText(0);
+			solo.enterText(0,userName);
+			
+			solo.clickOnEditText(1);
+			solo.enterText(1,pass);
+			
+			solo.clickOnButton(0);
+			
+			solo.waitForActivity(ActivityPrincipal.class);
+		fsmCliente.loginServidor();
+		assertEquals(true, fsmCliente.getState() == StatesCliente.logado.toString());
+			
+			solo.clickOnButton(2);
+			
+			solo.clickOnButton(0);
+			
+			solo.waitForActivity(ActivityAula.class);
+			
+		fsmCliente.entrarEmAula();
+		assertEquals(true, fsmCliente.getState() == StatesCliente.emAula.toString());
+			
+			solo.sleep(5000);
+			solo.clickOnButton(0);
+			solo.waitForActivity(ActivityPrincipal.class);
+			
+		fsmCliente.profFechaAula();
+		assertEquals(true, fsmCliente.getState() == StatesCliente.visualizandoNotificacao.toString());
+		fsmCliente.sairNotificacao();			
+		assertEquals(true, fsmCliente.getState() == StatesCliente.logado.toString());
 
+			solo.clickOnImageButton(0);
+			
+		fsmCliente.efetuarLogout();
+		assertEquals(true, fsmCliente.getState() == StatesCliente.inativo.toString());
+	}
+	
 }
